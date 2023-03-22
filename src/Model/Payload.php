@@ -102,7 +102,7 @@ class Payload
      */
     public function getQueueData(): ?array
     {
-        return json_decode($this->queue_data);
+        return json_decode($this->queue_data, true);
     }
 
     public function setDelayTime(int $delay_time = 0)
