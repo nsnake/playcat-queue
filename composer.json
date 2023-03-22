@@ -4,6 +4,7 @@
   "license": "MIT",
   "description": "Webman plugin playcat/queue",
   "require": {
+    "php": ">=7.2"
   },
   "autoload": {
     "psr-4": {

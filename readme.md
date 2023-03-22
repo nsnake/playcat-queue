@@ -19,7 +19,6 @@ Kafka(todo)
 
 ## 环境需求
 
-- Webman >= 4.0
 - PHP >= 7.2
 - Redis >= 5.0
 
