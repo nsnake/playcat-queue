@@ -1,0 +1,13 @@
+{
+  "name": "playcat/queue",
+  "type": "library",
+  "license": "MIT",
+  "description": "Webman plugin playcat/queue",
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Playcat\\Queue\\": "src"
+    }
+  }
+}
