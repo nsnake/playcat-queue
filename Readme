@@ -1,0 +1,14 @@
+
+
+特性:
+支持多种消息队列(Redis,Kafka等)
+更好的延迟消息机制
+
+当前支持:
+Redis单机(已完成)
+Redis集群(todo)
+Kafka(todo)
+
+
+```
+```
