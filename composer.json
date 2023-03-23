@@ -2,7 +2,15 @@
   "name": "playcat/queue",
   "type": "library",
   "license": "MIT",
-  "description": "Webman plugin playcat/queue",
+  "description": "Webman plugin MQ",
+  "authors": [
+    {
+      "name": "CGI.NET",
+      "email": "root@playcat.net",
+      "homepage": "blog.playcat.net"
+    }
+  ],
+  "minimum-stability": "dev",
   "require": {
     "php": ">=7.2"
   },
