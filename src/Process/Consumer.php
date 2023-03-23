@@ -91,7 +91,7 @@ class Consumer
                 }
             }
 
-        }, $this->config);
+        }, [$this->config]);
     }
 
     /**
