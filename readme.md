@@ -1,18 +1,18 @@
 <h1 align="center">Playcat Queue</h1>
 
-<p align="center">php消息队列服务</p>
+<p align="center">webman下的消息队列服务</p>
 
 ## 特点
 
-1. 支持多种消息队列(Redis,Kafka)
-2. 延迟消息机制
-3. 易于使用和扩展
+1. 多种消息系统支持(Redis,Kafka)
+2. 高效的消息延迟和异常重试机制
+3. 支持大数据量处理场景
 
-## 支持的消息队列
+## 支持的消息系统
 
-Redis单机(**已完成**)
+Redis Stream (**已完成**)
 
-Redis集群(**已完成**)
+Redis Cluster Stream (**已完成**)
 
 Kafka(**todo**)
 
@@ -21,34 +21,34 @@ Kafka(**todo**)
 ## 环境需求
 
 - PHP >= 7.2
-- Redis >= 5.0
+- webman >= 1.4
+- PHP Redis扩展
 
 ## 安装
-
-本项目基于webman,所以请先安装好webman在执行下面操作。
-
 ```shell
 $ composer require "playcat/queue"
 ```
 
-## 使用
+## 使用方法
 
-### 1.选择合适的消息服务端
-- 使用redis单机(默认)
+### 1.选择自己的消息服务
+- 使用Redis Stream(默认)
+  所用Redis的版本 >=5.0
   修改config\plugin\playcat\queue\redis.php为自己redis的配置即可
 
-- 使用redis集群机
-  修改config\plugin\playcat\queue\manager.php里的driver为如下内容
+
+- 使用Redis Cluster Stream
+  所用Redis的版本 >=5.0并且配置好自己的集群环境
+  编辑`config\plugin\playcat\queue\manager.php`修改里面的`driver`为如下内容
 ```php
 'driver' => \Playcat\Queue\Driver\Rediscluster::class,
 ```
-修改config\plugin\playcat\queue\rediscluster.php为自己redis的配置即可
+   编辑`config\plugin\playcat\queue\rediscluster.php`,替换对应的redis的配置即可
 
 
 
 ### 2.创建消费者任务
 
-#### 编辑'*config/plugin/playcat/queue/redis.php*',修改对应的redis配置
 
 #### 新建一个名为'Test.php'文件添加以下内容:
 

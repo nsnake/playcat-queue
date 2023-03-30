@@ -78,7 +78,7 @@ class Consumer
                     } catch (DontRetry $e) {
 
                     } catch (Exception $e) {
-                        if ($config['max_attempts'] < $payload->getRetryCount()) {
+                        if ($config['max_attempts'] > $payload->getRetryCount()) {
                             $payload->setRetryCount($payload->getRetryCount() + 1);
                             $payload->setDelayTime(
                                 pow($config['retry_seconds'], $payload->getRetryCount())
