@@ -69,7 +69,7 @@ class Consumer
             }
         }
 
-        $this->pull_timing = Timer::add(0.300, function ($config) use ($manager, $consumers) {
+        $this->pull_timing = Timer::add(0.1, function ($config) use ($manager, $consumers) {
             $payload = $manager->shift();
             if ($payload && ($payload instanceof \Playcat\Queue\Model\Payload)) {
                 if (isset($consumers[$payload->getChannel()])) {
