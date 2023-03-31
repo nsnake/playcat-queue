@@ -64,9 +64,10 @@ class Consumer
                     $consumer = Container::get($class);
                     $channel = $consumer->queue;
                     $consumers[$channel] = $consumer;
-                    $manager->subscribe($channel);
+
                 }
             }
+            $manager->subscribe(array_keys($consumers));
         }
 
         $this->pull_timing = Timer::add(0.1, function ($config) use ($manager, $consumers) {

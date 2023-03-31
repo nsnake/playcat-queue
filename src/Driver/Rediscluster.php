@@ -53,14 +53,20 @@ class Rediscluster extends Base implements Driver
     }
 
     /***
-     * @param string $channle
+     * @param array $channels
      * @return bool
      */
-    public function subscribe(string $channle): bool
+    public function subscribe(array $channels): bool
     {
-        $this->channels[$channle] = '>';
-        return $this->getRedis()
-            ->xGroup('CREATE', $channle, self::CONSUMERGROUPNAME, '0', true);
+        $result = true;
+        foreach ($channels as $channel) {
+            $this->channels[$channel] = '>';
+            if (!$this->getRedis()
+                ->xGroup('CREATE', $channel, self::CONSUMERGROUPNAME, '0', true)) {
+                $result = false;
+            }
+        }
+        return $result;
     }
 
     /**

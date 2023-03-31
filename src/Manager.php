@@ -33,9 +33,9 @@ class Manager implements Driver
         $this->driver->setIconicId($iconic_id);
     }
 
-    public function subscribe(string $channle): bool
+    public function subscribe(array $channels): bool
     {
-        return $this->driver->subscribe($channle);
+        return $this->driver->subscribe($channels);
     }
 
     /**

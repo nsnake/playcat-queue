@@ -8,7 +8,7 @@ interface Driver
 {
     public function setIconicId(int $iconic_id = 0): void;
 
-    public function subscribe(string $channle): bool;
+    public function subscribe(array $channels): bool;
 
     public function shift(): ?Payload;
 

@@ -58,15 +58,21 @@ class Redis extends Base implements Driver
         return $this->redis;
     }
 
-    /***
-     * @param string $channle
+    /**
+     * @param array $channels
      * @return bool
      */
-    public function subscribe(string $channle): bool
+    public function subscribe(array $channels): bool
     {
-        $this->channels[$channle] = '>';
-        return $this->getRedis()
-            ->xGroup('CREATE', $channle, self::CONSUMERGROUPNAME, '0', true);
+        $result = true;
+        foreach ($channels as $channel) {
+            $this->channels[$channel] = '>';
+            if (!$this->getRedis()
+                ->xGroup('CREATE', $channel, self::CONSUMERGROUPNAME, '0', true)) {
+                $result = false;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -82,7 +88,7 @@ class Redis extends Base implements Driver
             $this->current_id = key($result[$this->current_channel]);
             $result = new Payload($result[$this->current_channel][$this->current_id]);
             $result->setID($this->current_id);
-        }else{
+        } else {
             $result = null;
         }
         return $result;
