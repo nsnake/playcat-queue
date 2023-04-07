@@ -2,21 +2,21 @@
 
 <p align="center">webman下的消息队列服务</p>
 
+**注意2.0与1.0并不完全兼容，需要做少量修改**
+
+
 ## 特点
 
 1. 多种消息系统支持(Redis,Kafka)
-2. 高效的消息延迟和异常重试机制
+2. 支持消息延迟和异常重试
 3. 支持大数据量处理场景
 
 ## 支持的消息系统
 
-Redis Stream (**已完成**)
+- 基于Stream的Redis及Cluster
+- Kafka
 
-Redis Cluster Stream (**已完成**)
 
-Kafka(**已完成**)
-
-更多。。。
 
 ## 环境需求
 
@@ -75,15 +75,15 @@ $ composer require "playcat/queue"
 
 namespace app\queue\playcat;
 
-use Playcat\Queue\Model\Payload;
-use Playcat\Queue\Protocols\Consumer;
+use Playcat\Queue\Protocols\ConsumerDataInterface;
+use Playcat\Queue\Protocols\ConsumerInterface;
 
-class Test implements Consumer
+class Test implements ConsumerInterface
 {
     //任务名称
     public $queue = 'test';
 
-    public function consume(Payload $payload)
+    public function consume(ConsumerDataInterface $payload)
     {
         //获取自定义传入的内容
         $data = $payload->getQueueData();
@@ -108,8 +108,8 @@ $ php start.php start
 
 ```php
 use Playcat\Queue\Manager;
-use Playcat\Queue\Model\Payload;
-$payload = new Payload();
+use Playcat\Queue\Protocols\ProducerData;
+$payload = new ProducerData();
 //对应消费队列里的任务名称
 $payload->setChannel('test');
 //对应消费队列里的任务使用的数据
@@ -117,7 +117,7 @@ $payload->setQueueData([1,2,3,4]);
 //创建一个立即执行的任务
 Manager::getInstance()->push($payload);
 
-$payload_delay = new Payload();
+$payload_delay = new ProducerData();
 //对应消费队列里的任务名称
 $payload_delay->setChannel('test');
 //对应消费队列里的任务使用的数据
@@ -135,7 +135,7 @@ Manager::getInstance()->push($payload_delay);`
 
 ### Playcat\Queue\Model\Payload
 
-- getID: 当前任务的唯一id
+- getID: 当前任务的唯一id(可能为空)
 - getRetryCount(): 当前任务已经重试过的次数
 - getQueueData():  当前任务传入的参数
 - getChannel(): 当前所执行的任务名称
