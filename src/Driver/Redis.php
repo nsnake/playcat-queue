@@ -103,8 +103,7 @@ class Redis extends Base implements DriverInterface
      */
     public function consumerFinished(): bool
     {
-        return ($this->getRedis()->xAck($this->current_channel, self::CONSUMERGROUPNAME, [$this->current_id])
-            && $this->getRedis()->xDel($this->current_channel, [$this->current_id]));
+        return $this->getRedis()->xAck($this->current_channel, self::CONSUMERGROUPNAME, [$this->current_id]);
     }
 
     /**
