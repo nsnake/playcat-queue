@@ -107,7 +107,7 @@ class ProducerData implements ProducerDataInterface
             'channel' => $this->channel,
             'creattime' => time(),
             'retrycount' => $this->retry_count,
-            'queuedata' => json_decode($this->queue_data),
+            'queuedata' => json_encode($this->queue_data),
             'delaytime' => $this->delay_time
         ];
     }
