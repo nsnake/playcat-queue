@@ -5,8 +5,8 @@ namespace Playcat\Queue\Process;
 use Exception;
 use Playcat\Queue\Exceptions\DontRetry;
 use Playcat\Queue\Manager;
+use Playcat\Queue\Protocols\ConsumerData;
 use Playcat\Queue\Protocols\ProducerData;
-use Playcat\Queue\Protocols\ProducerDataInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -74,7 +74,7 @@ class Consumer
 
         $this->pull_timing = Timer::add(0.1, function ($config) use ($manager, $consumers) {
             $payload = $manager->shift();
-            if (($payload instanceof ProducerDataInterface)) {
+            if (($payload instanceof ConsumerData)) {
                 if (isset($consumers[$payload->getChannel()])) {
                     try {
                         call_user_func([$consumers[$payload->getChannel()], 'consume'], $payload);

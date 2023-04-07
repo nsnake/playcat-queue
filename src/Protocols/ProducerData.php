@@ -68,7 +68,7 @@ class ProducerData implements ProducerDataInterface
      */
     public function setQueueData(array $data): void
     {
-        $this->queue_data = json_encode($data);
+        $this->queue_data = $data;
     }
 
     /**
@@ -76,7 +76,7 @@ class ProducerData implements ProducerDataInterface
      */
     public function getQueueData(): ?array
     {
-        return json_decode($this->queue_data, true);
+        return $this->queue_data;
     }
 
     public function setDelayTime(int $delay_time = 0)
