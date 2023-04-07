@@ -29,8 +29,8 @@ class TimerServer
     public function onMessage(TcpConnection $connection, $data)
     {
         try {
-            $payload = json_decode($data, true);
-            if ($payload && is_array($payload)) {
+            $payload = unserialize($data);
+            if ($payload && is_object($payload)) {
                 Timer::add(floatval($payload->getDelayTime()), function (ProducerData $payload) {
                     $payload->setDelayTime();
                     $this->manager->push($payload);

@@ -5,7 +5,7 @@ namespace Playcat\Queue;
 
 use Dotenv\Exception\ValidationException;
 use Playcat\Queue\Exceptions\ConnectTimerServerFail;
-use Playcat\Queue\Model\Payload;
+use Playcat\Queue\Protocols\ProducerData;
 
 class TimerClient
 {
@@ -42,14 +42,11 @@ class TimerClient
         return self::$client;
     }
 
-    /**
-     * @param Payload $payload
-     * @return string
-     */
-    public function send(Payload $payload): string
+
+    public function send(ProducerData $payload): string
     {
         try {
-            fwrite($this->client(), json_encode($payload->getPayload()) . "\n");
+            fwrite($this->client(), serialize($payload) . "\n");
             $result = fread($this->client(), 1024);
             return $result;
         } catch (ConnectTimerServerFail $e) {

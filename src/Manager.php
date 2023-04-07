@@ -2,7 +2,6 @@
 
 namespace Playcat\Queue;
 
-use Playcat\Queue\Model\Payload;
 use Playcat\Queue\Protocols\ConsumerDataInterface;
 use Playcat\Queue\Protocols\DriverInterface;
 use Playcat\Queue\Protocols\ProducerDataInterface;
