@@ -4,10 +4,13 @@ namespace Playcat\Queue\Driver;
 
 use Playcat\Queue\Exceptions\ParamsError;
 use Playcat\Queue\Model\Payload;
-use Playcat\Queue\Protocols\Driver;
+use Playcat\Queue\Protocols\ConsumerData;
+use Playcat\Queue\Protocols\ConsumerDataInterface;
+use Playcat\Queue\Protocols\DriverInterface;
+use Playcat\Queue\Protocols\ProducerDataInterface;
 use RuntimeException;
 
-class Rediscluster extends Base implements Driver
+class Rediscluster extends Base implements DriverInterface
 {
 
     public const CONSUMERGROUPNAME = 'PLAYCATCONSUMERGROUP';
@@ -73,14 +76,14 @@ class Rediscluster extends Base implements Driver
      * @return Payload|null
      * @throws ParamsError
      */
-    public function shift(): ?Payload
+    public function shift(): ?ConsumerDataInterface
     {
         $result = $this->getRedis()
             ->xReadGroup(self::CONSUMERGROUPNAME, "consumer_" . $this->iconic_id, $this->channels, 1);
         if ($result) {
             $this->current_channel = key($result);
             $this->current_id = key($result[$this->current_channel]);
-            $result = new Payload($result[$this->current_channel][$this->current_id]);
+            $result = new ConsumerData($result[$this->current_channel][$this->current_id]);
             $result->setID($this->current_id);
         } else {
             $result = null;
@@ -99,12 +102,12 @@ class Rediscluster extends Base implements Driver
     }
 
     /**
-     * @param Payload $payload
-     * @return string|null  Unique id
+     * @param ProducerDataInterface $payload
+     * @return string|null
      */
-    public function push(Payload $payload): ?string
+    public function push(ProducerDataInterface $payload): ?string
     {
-        return $this->getRedis()->xadd($payload->getChannel(), '*', $payload->getPayload());
+        return $this->getRedis()->xadd($payload->getChannel(), '*', $payload->getArray());
     }
 
 }

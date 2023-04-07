@@ -3,9 +3,11 @@
 namespace Playcat\Queue;
 
 use Playcat\Queue\Model\Payload;
-use Playcat\Queue\Protocols\Driver;
+use Playcat\Queue\Protocols\ConsumerDataInterface;
+use Playcat\Queue\Protocols\DriverInterface;
+use Playcat\Queue\Protocols\ProducerDataInterface;
 
-class Manager implements Driver
+class Manager implements DriverInterface
 {
     protected static $instance;
     protected $driver;
@@ -38,16 +40,13 @@ class Manager implements Driver
         return $this->driver->subscribe($channels);
     }
 
-    /**
-     * @return Payload
-     * @throws Exceptions\ParamsError
-     */
-    public function shift(): ?Payload
+
+    public function shift(): ?ConsumerDataInterface
     {
         return $this->driver->shift();
     }
 
-    public function push(Payload $payload): ?string
+    public function push(ProducerDataInterface $payload): ?string
     {
         if ($payload->getDelayTime() >= 3) {
             $this->timer_client->send($payload);

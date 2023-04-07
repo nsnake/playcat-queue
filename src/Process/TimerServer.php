@@ -3,7 +3,7 @@
 namespace Playcat\Queue\Process;
 
 use ErrorException;
-use Playcat\Queue\Model\Payload;
+use Playcat\Queue\Protocols\ProducerData;
 use Workerman\Timer;
 use Workerman\Worker;
 use Workerman\Connection\TcpConnection;
@@ -31,8 +31,7 @@ class TimerServer
         try {
             $payload = json_decode($data, true);
             if ($payload && is_array($payload)) {
-                $payload = new Payload($payload);
-                Timer::add(floatval($payload->getDelayTime()), function (Payload $payload) {
+                Timer::add(floatval($payload->getDelayTime()), function (ProducerData $payload) {
                     $payload->setDelayTime();
                     $this->manager->push($payload);
                 }, [$payload], false);

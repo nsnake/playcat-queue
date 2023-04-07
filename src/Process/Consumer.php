@@ -5,6 +5,8 @@ namespace Playcat\Queue\Process;
 use Exception;
 use Playcat\Queue\Exceptions\DontRetry;
 use Playcat\Queue\Manager;
+use Playcat\Queue\Protocols\ProducerData;
+use Playcat\Queue\Protocols\ProducerDataInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -72,7 +74,7 @@ class Consumer
 
         $this->pull_timing = Timer::add(0.1, function ($config) use ($manager, $consumers) {
             $payload = $manager->shift();
-            if ($payload && ($payload instanceof \Playcat\Queue\Model\Payload)) {
+            if (($payload instanceof ProducerDataInterface)) {
                 if (isset($consumers[$payload->getChannel()])) {
                     try {
                         call_user_func([$consumers[$payload->getChannel()], 'consume'], $payload);
@@ -80,11 +82,14 @@ class Consumer
 
                     } catch (Exception $e) {
                         if ($config['max_attempts'] > $payload->getRetryCount()) {
-                            $payload->setRetryCount($payload->getRetryCount() + 1);
-                            $payload->setDelayTime(
+                            $producer_data = new ProducerData();
+                            $producer_data->setChannel($payload->getChannel());
+                            $producer_data->setQueueData($payload->getQueueData());
+                            $producer_data->setRetryCount($payload->getRetryCount() + 1);
+                            $producer_data->setDelayTime(
                                 pow($config['retry_seconds'], $payload->getRetryCount())
                             );
-                            $manager->push($payload);
+                            $manager->push($producer_data);
                         }
                     } finally {
                         $manager->consumerFinished();
