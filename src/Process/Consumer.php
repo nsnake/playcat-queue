@@ -62,7 +62,7 @@ class Consumer
             $ext = (new SplFileInfo($file))->getExtension();
             if ($ext === 'php') {
                 $class = str_replace('/', "\\", substr(substr($file, strlen(base_path())), 0, -4));
-                if (is_a($class, 'Playcat\Queue\Protocols\Consumer', true)) {
+                if (is_a($class, 'Playcat\Queue\Protocols\ConsumerInterface', true)) {
                     $consumer = Container::get($class);
                     $channel = $consumer->queue;
                     $consumers[$channel] = $consumer;
