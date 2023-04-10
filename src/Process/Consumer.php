@@ -87,7 +87,7 @@ class Consumer
                             $producer_data->setQueueData($payload->getQueueData());
                             $producer_data->setRetryCount($payload->getRetryCount() + 1);
                             $producer_data->setDelayTime(
-                                pow($config['retry_seconds'], $payload->getRetryCount())
+                                pow($config['retry_seconds'], $producer_data->getRetryCount())
                             );
                             $manager->push($producer_data);
                         }

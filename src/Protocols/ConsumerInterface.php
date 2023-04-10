@@ -8,6 +8,6 @@ namespace Playcat\Queue\Protocols;
  */
 interface ConsumerInterface
 {
-    public function consume(ConsumerDataInterface $data);
+    public function consume(ConsumerData $data);
 }
 
