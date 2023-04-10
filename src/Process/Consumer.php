@@ -7,9 +7,6 @@ use Playcat\Queue\Exceptions\DontRetry;
 use Playcat\Queue\Manager;
 use Playcat\Queue\Protocols\ConsumerData;
 use Playcat\Queue\Protocols\ProducerData;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use SplFileInfo;
 use support\Container;
 use Workerman\Worker;
 use Workerman\Timer;
@@ -21,11 +18,12 @@ use Workerman\Timer;
  */
 class Consumer
 {
+
     /**
-     * @var string
+     * @var array
      */
-    protected $consumer_dir = '';
-    protected $config = [];
+    private $config = [];
+
     private $pull_timing;
 
     /**
@@ -53,29 +51,18 @@ class Consumer
         $manager = Manager::getInstance();
         $manager->setIconicId($worker->id);
 
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->config['consumer_dir']));
-        $consumers = [];
-        foreach ($iterator as $file) {
-            if (is_dir($file)) {
-                continue;
-            }
-            $ext = (new SplFileInfo($file))->getExtension();
-            if ($ext === 'php') {
-                $class = str_replace('/', "\\", substr(substr($file, strlen(base_path())), 0, -4));
-                if (is_a($class, 'Playcat\Queue\Protocols\ConsumerInterface', true)) {
-                    $consumer = Container::get($class);
-                    $channel = $consumer->queue;
-                    $consumers[$channel] = $consumer;
-
-                }
-            }
-            $manager->subscribe(array_keys($consumers));
+        try {
+            $consumers = $this->loadWorkTask($this->config['consumer_dir']);
+        } catch (Exception $e) {
+            echo 'Error while loading consumers: ' . $e->getMessage() . "\r\n";
+            return;
         }
+        $manager->subscribe(array_keys($consumers));
 
         $this->pull_timing = Timer::add(0.1, function ($config) use ($manager, $consumers) {
             $payload = $manager->shift();
             if (($payload instanceof ConsumerData)) {
-                if (isset($consumers[$payload->getChannel()])) {
+                if (!empty($consumers[$payload->getChannel()])) {
                     try {
                         call_user_func([$consumers[$payload->getChannel()], 'consume'], $payload);
                     } catch (DontRetry $e) {
@@ -111,6 +98,24 @@ class Consumer
         if ($this->pull_timing) {
             Timer::del($this->pull_timing);
         }
+    }
+
+    /**
+     * @param string $dir
+     * @return array
+     */
+    protected function loadWorkTask(string $dir = ''): array
+    {
+        $consumers = [];
+        foreach (glob($dir . '/*.php') as $file) {
+            $class = str_replace('/', "\\", substr(substr($file, strlen(base_path())), 0, -4));
+            if (is_a($class, 'Playcat\Queue\Protocols\ConsumerInterface', true)) {
+                $consumer = Container::get($class);
+                $channel = $consumer->queue;
+                $consumers[$channel] = $consumer;
+            }
+        }
+        return $consumers;
     }
 
 }
