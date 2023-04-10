@@ -81,7 +81,9 @@ class Consumer
                     } catch (DontRetry $e) {
 
                     } catch (Exception $e) {
-                        if ($config['max_attempts'] > $payload->getRetryCount()) {
+                        if (isset($config['max_attempts'])
+                            && $config['max_attempts'] > 0
+                            && $config['max_attempts'] > $payload->getRetryCount()) {
                             $producer_data = new ProducerData();
                             $producer_data->setChannel($payload->getChannel());
                             $producer_data->setQueueData($payload->getQueueData());
