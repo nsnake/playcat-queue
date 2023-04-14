@@ -1,14 +1,9 @@
 <h1 align="center">Playcat Queue</h1>
 
-<p align="center">webman下的消息队列服务</p>
+<p align="center">基于 webman 的消息队列服务，支持 Redis、Kafka 和 RabbitMQ 三种消息系统，支持消息延迟和异常重试，以及大数据量处理场景</p>
 
-**注意2.0与1.0并不完全兼容，需要做少量修改**
+**注意2.0与1.0并不完全兼容**
 
-## 特点
-
-1. 多消息系统支持
-2. 支持消息延迟和异常重试
-3. 支持大数据量处理场景
 
 ## 支持的消息系统
 
@@ -34,45 +29,41 @@ $ composer require "playcat/queue"
 
 ### 1.选择自己的消息服务
 
-- 使用Redis Stream(默认)
-  所用Redis的版本 >=5.0
-  修改config\plugin\playcat\queue\redis.php为自己redis的配置即可
+- Redis Stream(默认)
+  编辑`config\plugin\playcat\queue\redis.php`为对应的redis的配置
 
 
-- 使用Redis Cluster Stream
-  所用Redis的版本 >=5.0并且配置好自己的集群环境
-  编辑
- `config\plugin\playcat\queue\manager.php` 修改里面的`driver`为如下内容
+- Redis集群
+  编辑`config\plugin\playcat\queue\manager.php`里的`driver`为如下内容
 
 ```php
 'driver' => \Playcat\Queue\Driver\Rediscluster::class,
 ```
-
-编辑`config\plugin\playcat\queue\rediscluster.php`,替换为自己的redis的配置
+  编辑`config\plugin\playcat\queue\rediscluster.php`为对应的redis的配置
 
 - 使用Kafka
 
-- 创建Kafka的topic
+- 首先在Kafka上创建好topic
 
 ```shell
 ./kaftopics.sh --create --bootstrap-server xxx:9092 --replication-factor 1 --partitions 1 --topic 任务名称
 ```
 
-- 编辑`config\plugin\playcat\queue\manager.php`修改里面的`driver`为如下内容
+ 编辑`config\plugin\playcat\queue\manager.php`修改里面的`driver`为如下内容
 
 ```php
 'driver' => \Playcat\Queue\Driver\Kafka::class,
 ```
 
-编辑`config\plugin\playcat\queue\Kafka.php`,替换为自己的Kafka的配置
+ 编辑`config\plugin\playcat\queue\Kafka.php`,为对应的Kafka的配置
 
 - 使用RabbitMQ
-- 编辑`config\plugin\playcat\queue\manager.php`修改里面的`driver`为如下内容
+  编辑`config\plugin\playcat\queue\manager.php`修改里面的`driver`为如下内容
 
 ```php
 'driver' => \Playcat\Queue\Driver\RabbitMQ::class,
 ```
-编辑`config\plugin\playcat\queue\rabbitmq.php`,替换为自己的Rabbitmq的配置
+ 编辑`config\plugin\playcat\queue\rabbitmq.php`,为对应的Rabbitmq的配置
 
 ### 2.创建消费者任务
 
@@ -91,7 +82,7 @@ class Test implements ConsumerInterface
     //任务名称
     public $queue = 'test';
 
-    public function consume(ConsumerDataInterface $payload)
+    public function consume(ConsumerData $payload)
     {
         //获取自定义传入的内容
         $data = $payload->getQueueData();
