@@ -4,7 +4,7 @@ namespace Playcat\Queue;
 
 
 use Dotenv\Exception\ValidationException;
-use Playcat\Queue\Exceptions\ConnectTimerServerFail;
+use Playcat\Queue\Exceptions\ConnectFailExceptions;
 use Playcat\Queue\Protocols\ProducerData;
 
 class TimerClient
@@ -28,14 +28,14 @@ class TimerClient
 
     /**
      * @return false|resource
-     * @throws ConnectTimerServerFail
+     * @throws ConnectFailExceptions
      */
     private function client()
     {
         if (!self::$client) {
             self::$client = stream_socket_client('tcp://' . $this->config ['timerserver'], $errno, $errstr);
             if (!self::$client) {
-                throw new ConnectTimerServerFail('Connect to playcat time server failed. ' . $errstr);
+                throw new ConnectFailExceptions('Connect to playcat time server failed. ' . $errstr);
             }
         }
 
@@ -49,7 +49,7 @@ class TimerClient
             fwrite($this->client(), serialize($payload) . "\n");
             $result = fread($this->client(), 1024);
             return $result;
-        } catch (ConnectTimerServerFail $e) {
+        } catch (ConnectFailExceptions $e) {
             return '';
         }
     }

@@ -5,6 +5,7 @@ namespace Playcat\Queue\Driver;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use Playcat\Queue\Exceptions\ConnectFailExceptions;
 use Playcat\Queue\Exceptions\ParamsError;
 use Playcat\Queue\Protocols\ConsumerData;
 use Playcat\Queue\Protocols\ConsumerDataInterface;
@@ -31,13 +32,10 @@ class RabbitMQ extends Base implements DriverInterface
 
     /**
      * @param string $config_name
+     * @throws ConnectFailExceptions
      */
     public function __construct(string $config_name = 'default')
     {
-        if (!extension_loaded('amqp')) {
-            throw new RuntimeException('Please make sure the PHP AMQP extension is installed and enabled.');
-
-        }
         $configs = config('plugin.playcat.queue.rabbitmq', []);
         $this->config = $configs[$config_name];
         try {
@@ -49,8 +47,8 @@ class RabbitMQ extends Base implements DriverInterface
                 $this->config['options']['vhost'] ?? '/'
             );
         } catch (\Exception $e) {
+            throw new ConnectFailExceptions('Connection to rabbitmq failed.' . $e->getMessage());
         }
-
     }
 
     /**

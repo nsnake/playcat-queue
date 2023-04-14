@@ -2,7 +2,7 @@
 
 namespace Playcat\Queue\Exceptions;
 
-class ConnectTimerServerFail extends \Exception
+class ConnectFailExceptions extends \Exception
 {
 
 }
