@@ -69,13 +69,13 @@ class Kafka extends Base implements DriverInterface
         $message = $this->getKafkaConsumer()->consume(0);
         switch ($message->err) {
             case RD_KAFKA_RESP_ERR_NO_ERROR:
+                $msgid = $message->headers['message_id'];
                 $result = new ConsumerData($message->payload);
+                $result->setID($msgid);
                 break;
             case RD_KAFKA_RESP_ERR__PARTITION_EOF:
             case RD_KAFKA_RESP_ERR__TIMED_OUT:
                 break;
-            default:
-                throw new \Exception($message->errstr(), $message->err);
         }
         return $result;
     }
@@ -95,8 +95,10 @@ class Kafka extends Base implements DriverInterface
      */
     public function push(ProducerDataInterface $payload): ?string
     {
-        $this->getKafkaProduce()->newTopic($payload->getChannel())->produce(RD_KAFKA_PARTITION_UA, 0, $payload->getJSON());
-        return $this->getKafkaProduce()->flush(100) === RD_KAFKA_RESP_ERR_NO_ERROR ? 1 : 0;
+        $msgid = $this->generateUUID();
+        $this->getKafkaProduce()->newTopic($payload->getChannel())->producev(RD_KAFKA_PARTITION_UA, 0, $payload->getJSON(), null, ['message_id' => $msgid]);
+        return $this->getKafkaProduce()->flush(100) === RD_KAFKA_RESP_ERR_NO_ERROR
+            ? $msgid : '';
     }
 
 }
