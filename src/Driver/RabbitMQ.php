@@ -89,6 +89,7 @@ class RabbitMQ extends Base implements DriverInterface
         if ($result) {
             $this->current_msg = $result;
             $result = new ConsumerData($result->body);
+            $result->setID($this->current_msg->get('message_id'));
         } else {
             $result = null;
         }
@@ -111,7 +112,7 @@ class RabbitMQ extends Base implements DriverInterface
      */
     public function push(ProducerDataInterface $payload): ?string
     {
-        $data = new AMQPMessage($payload->getJSON());
+        $data = new AMQPMessage($payload->getJSON(), ['message_id' => $this->generateUUID()]);
         return $this->getConnection()->basic_publish($data, self::CONSUMEREXCHANGENAM, $payload->getChannel());
     }
 
