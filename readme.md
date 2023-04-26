@@ -94,13 +94,12 @@ class 你的文件名 implements ConsumerInterface
 ```
 
 
-### ConsumerData可用方法
+### ConsumerData方法
 
 - getID: 当前消息的id
 - getRetryCount(): 当前任务已经重试过的次数
 - getQueueData():  当前任务传入的参数
 - getChannel(): 当前所执行的任务名称
-
 - - -
 
 #### 将上面编写好的任务文件保存到'*app/queue/playcat/*'目录下。如果目录不存在就创建它
@@ -138,6 +137,12 @@ $payload_delay->setDelayTime(60);
 $id = Manager::getInstance()->push($payload_delay);`
 ```
 
+### ProducerData方法
+
+- setChannel: 设置推入消息的队列名称
+- setQueueData: 设置传入到消费任务的数据
+- setDelayTime: 设置延迟时间(秒)
+- - -
 
 ### 异常与重试机制
 
