@@ -40,10 +40,10 @@ interface ProducerDataInterface
     public function getRetryCount(): int;
 
     /**
-     * @param array $data
+     * @param  $data
      * @return void
      */
-    public function setQueueData(array $data): void;
+    public function setQueueData($data): void;
 
     /**
      * @return array

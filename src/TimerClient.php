@@ -51,7 +51,9 @@ class TimerClient
             $protocols->setCMD(TimerClientProtocols::CMD_PUSH);
             $protocols->setPayload($payload);
             fwrite($this->client(), serialize($protocols) . "\n");
-            return fread($this->client(), 1024);
+            $result = fread($this->client(), 1024);
+            $result = json_decode($result, true);
+            return $result['code'] == 200 ? $result['data'] : '';
         } catch (ConnectFailExceptions $e) {
             return '';
         }

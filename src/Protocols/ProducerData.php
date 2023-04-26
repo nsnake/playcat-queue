@@ -66,7 +66,7 @@ class ProducerData implements ProducerDataInterface
      * @param array $data
      * @return void
      */
-    public function setQueueData(array $data): void
+    public function setQueueData($data): void
     {
         $this->queue_data = $data;
     }
@@ -107,7 +107,7 @@ class ProducerData implements ProducerDataInterface
             'channel' => $this->channel,
             'creattime' => time(),
             'retrycount' => $this->retry_count,
-            'queuedata' => json_encode($this->queue_data),
+            'queuedata' => serialize($this->queue_data),
             'delaytime' => $this->delay_time
         ];
     }

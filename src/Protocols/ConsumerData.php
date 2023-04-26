@@ -31,7 +31,7 @@ class ConsumerData implements ConsumerDataInterface
             $this->creat_time = $payload['creattime'];
             $this->channel = $payload['channel'];
             $this->retry_count = $payload['retrycount'];
-            $this->queue_data = json_decode($payload['queuedata'], true);
+            $this->queue_data = unserialize($payload['queuedata']);
             $this->delay_time = $payload['delaytime'];
         }
     }

@@ -47,13 +47,8 @@ class Manager implements DriverInterface
 
     public function push(ProducerDataInterface $payload): ?string
     {
-        if ($payload->getDelayTime() > 0) {
-            $result = $this->timer_client->send($payload);
-            $result = json_decode($result, true);
-            return $result['code'] == 200 ? $result['data'] : '';
-        } else {
-            return $this->driver->push($payload);
-        }
+        return $payload->getDelayTime() > 0
+            ? $this->timer_client->send($payload) : $this->driver->push($payload);
     }
 
     public function consumerFinished(): bool
