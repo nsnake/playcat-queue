@@ -1,5 +1,13 @@
-<h1 align="center">Playcat Queue</h1>
+<h1 align="center">Playcat Queue(2024/4/12 已不更新)</h1>
+本项目不在维护，推荐使用以下替代
 
+基于tp和swoole的队列系统
+[playcat-queue-tpswoole](https://github.com/nsnake/playcat-queue-tpswoole)
+
+基于webman的队列系统
+[playcat-queue-webman](https://github.com/nsnake/playcat-queue-webman)
+
+————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 <p align="center">基于 webman 的消息队列服务
 支持 Redis、Kafka 和 RabbitMQ。 支持延迟消息和异常重试</p>
 
